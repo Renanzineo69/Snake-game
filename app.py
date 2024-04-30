@@ -25,11 +25,11 @@ def posicionar_comida(largura, altura, tamanho_bloco, cobra_lista):
                 grades_disponiveis.append((x, y))
 
     if grades_disponiveis:
-        # Determinar se a comida especial será ativada (1 em 10)
+        # Determina se a comida especial será ativada (1 em 10)
         comida_especial_ativa = random.randint(1, 10) == 1
 
         if comida_especial_ativa:
-            # Escolher aleatoriamente uma grade disponível para a comida especial
+            # Escolhe aleatoriamente uma grade disponível para a comida especial
             comida_especial_grade = random.choice(grades_disponiveis)
             comida_especial_x = comida_especial_grade[0] * tamanho_bloco + (tamanho_bloco - comida_tamanho) // 2
             comida_especial_y = comida_especial_grade[1] * tamanho_bloco + (tamanho_bloco - comida_tamanho) // 2
@@ -37,7 +37,7 @@ def posicionar_comida(largura, altura, tamanho_bloco, cobra_lista):
             # A comida especial não está ativa
             comida_especial_x, comida_especial_y = -1, -1
 
-        # Escolher aleatoriamente uma grade disponível para a comida normal
+        # Escolhe aleatoriamente uma grade disponível para a comida normal
         comida_grade = random.choice(grades_disponiveis)
         comida_x = comida_grade[0] * tamanho_bloco + (tamanho_bloco - comida_tamanho) // 2
         comida_y = comida_grade[1] * tamanho_bloco + (tamanho_bloco - comida_tamanho) // 2
@@ -68,7 +68,7 @@ def mostrar_novo_recorde(tela, largura, altura, pontuacao):
 
         tela.fill(cores['branco'])
 
-        # Renderizar texto na tela
+        # Renderiza o texto na tela
         texto_render = fonte.render(texto_novo_recorde, True, cores['preto'])
         pos_x = (largura - texto_render.get_width()) // 2
         pos_y = altura // 4
@@ -164,20 +164,20 @@ def mostrar_game_over(tela, largura, altura, pontuacao):
                     return True
 
 def adicionar_pontuacao(nome_jogador, pontuacao, ranking):
-    # Converter pontuação para inteiro
+    # Converte  pontuação para inteiro
     pontuacao = int(pontuacao)
 
-    # Adicionar nova pontuação ao ranking
+    # Adiciona a nova pontuação ao ranking
     ranking.append({'Jogador': nome_jogador, 'Pontuacao': pontuacao})
 
-    # Converter todas as pontuações para inteiro antes de ordenar
+    # Converte todas as pontuações para inteiro antes de ordenar
     for registro in ranking:
         registro['Pontuacao'] = int(registro['Pontuacao'])
 
-    # Ordenar o ranking por pontuação decrescente
+    # Ordena o ranking por pontuação decrescente
     ranking.sort(key=lambda x: x['Pontuacao'], reverse=True)
 
-    # Manter apenas as 10 melhores pontuações
+    # Mantem apenas as 10 melhores pontuações
     ranking = ranking[:10]
 
     return ranking
@@ -192,21 +192,21 @@ def salvar_ranking(ranking):
 
 def carregar_ranking():
     try:
-        # Carregar o ranking do arquivo CSV
+        # Carrega o ranking do arquivo CSV
         with open('ranking.csv', newline='') as arquivo_csv:
             leitor_csv = csv.DictReader(arquivo_csv)
             ranking = [dict(registro) for registro in leitor_csv]
     except FileNotFoundError:
-        # Se o arquivo não existir, iniciar com ranking vazio
+        # Se o arquivo não existir, inicia com ranking vazio
         ranking = []
 
     return ranking
 
 def verificar_vitoria(largura, altura, tamanho_bloco, cobra_lista):
-    # Determinar o número total de grades possíveis na área jogável
+    # Determina o número total de grades possíveis na área jogável
     grades_totais = ((largura - 2 * tamanho_bloco) // tamanho_bloco) * ((altura - 2 * tamanho_bloco) // tamanho_bloco)
 
-    # Verificar se o comprimento da cobra cobre todas as grades disponíveis
+    # Verifica se o comprimento da cobra cobre todas as grades disponíveis
     return len(cobra_lista) >= grades_totais
 
 def mostrar_vitoria(tela, largura, altura):
@@ -264,10 +264,10 @@ def jogo_snake():
         posicao_y = altura // 2
         ultima_direcao = None
 
-        # Carregar ranking
+        # Carrega o ranking
         ranking = carregar_ranking()
 
-        # Inicializar posição da comida
+        # Inicializa a posição da comida
         (comida_x, comida_y, comida_especial_ativa, comida_especial_x, comida_especial_y) = posicionar_comida(largura, altura, tamanho_bloco, cobra_lista)
 
         while not game_over:
@@ -288,7 +288,7 @@ def jogo_snake():
                            (event.key == pygame.K_DOWN and ultima_direcao != pygame.K_UP):
                             ultima_direcao = event.key
 
-            # Atualizar posição da cobra com base na última direção após primeiro input
+            # Atualiza a posição da cobra com base na última direção após primeiro input
             if not movimento_inicial:
                 if ultima_direcao == pygame.K_LEFT and velocidade_x != tamanho_bloco:
                     velocidade_x = -tamanho_bloco
@@ -303,57 +303,57 @@ def jogo_snake():
                     velocidade_x = 0
                     velocidade_y = tamanho_bloco
 
-            # Atualizar posição da cobra
+            # Atualiza a posição da cobra
             posicao_x += velocidade_x
             posicao_y += velocidade_y
 
-            # Verificar colisões com bordas
+            # Verifica as colisões com bordas
             if posicao_x >= largura - tamanho_bloco or posicao_x < tamanho_bloco or \
                posicao_y >= altura - tamanho_bloco or posicao_y < tamanho_bloco:
                 game_over = True
 
-            # Verificar colisões consigo mesma
+            # Verifica as colisões consigo mesma
             if [posicao_x, posicao_y] in cobra_lista[:-1]:
                 game_over = True
 
-            # Atualizar lista da cobra
+            # Atualiza o corpo da cobra
             cobra_cabeca = [posicao_x, posicao_y]
             cobra_lista.append(cobra_cabeca)
 
             if len(cobra_lista) > comprimento_cobra:
                 del cobra_lista[0]
 
-            # Desenhar elementos na tela
+            # Desenha os elementos na tela
             tela.fill(cores['branco'])  # Preencher a tela com cor branca
             
             desenhar_limites(tela, largura, altura, tamanho_bloco)  # Desenhar linhas de limite
 
-            # Verificar se a cobra comeu a comida
+            # Verifica se a cobra comeu a comida
             if posicao_x <= comida_x < posicao_x + tamanho_bloco and posicao_y <= comida_y < posicao_y + tamanho_bloco:
                 comprimento_cobra += 1
-                # Atualizar posição da comida normal
+                # Atualiza a posição da comida normal
                 (comida_x, comida_y, comida_especial_ativa, comida_especial_x, comida_especial_y) = posicionar_comida(largura, altura, tamanho_bloco, cobra_lista)
 
-                # Verificar se a comida especial deve aparecer
+                # Verifica se a comida especial deve aparecer
                 if comida_especial_ativa and random.randint(1,10) == 1:
                     (comida_x, comida_y, _, comida_especial_x, comida_especial_y) = posicionar_comida(largura, altura, tamanho_bloco, cobra_lista)
            
-            # Verificar se a cobra comeu a comida especial
+            # Verifica se a cobra comeu a comida especial
             if comida_especial_ativa and posicao_x <= comida_especial_x < posicao_x + tamanho_bloco and posicao_y <= comida_especial_y < posicao_y + tamanho_bloco:
                 comprimento_cobra += 2  # Aumentar o comprimento da cobra ao coletar comida especial
                 comida_especial_ativa = False  # Desativar a comida especial
 
-            # Desenhar a comida normal
+            # Desenha a comida normal
             pygame.draw.rect(tela, cores['verde'], [comida_x, comida_y, tamanho_bloco // 2, tamanho_bloco // 2])
 
-            # Desenhar a comida especial se estiver ativa
+            # Desenha a comida especial se estiver ativa
             if comida_especial_ativa:
                 pygame.draw.rect(tela, cores['vermelho'], [comida_especial_x, comida_especial_y, tamanho_bloco // 2, tamanho_bloco // 2])
 
-            # Desenhar a cabeça da cobra
+            # Desenha a cabeça da cobra
             pygame.draw.rect(tela, cores[cor_cobra_cabeca], [posicao_x, posicao_y, tamanho_bloco, tamanho_bloco])
 
-            # Desenhar o corpo da cobra
+            # Desenha o corpo da cobra
             for bloco in cobra_lista[:-1]:  # Desenhar o corpo da cobra excluindo a cabeça
                 pygame.draw.rect(tela, cores[cor_cobra_corpo], [bloco[0], bloco[1], tamanho_bloco, tamanho_bloco])
 
@@ -361,21 +361,21 @@ def jogo_snake():
 
             clock.tick(fps)
 
-        # Calcular pontuação final
+        # Calcula a pontuação final
         pontuacao_final = (comprimento_cobra - 1) * 10
 
-        # Verificar se a pontuação final é maior que a menor pontuação no top 10
+        # Verifica se a pontuação final é maior que a menor pontuação no top 10
         if len(ranking) < 10 or pontuacao_final > ranking[-1]['Pontuacao']:
             nome_jogador = mostrar_novo_recorde(tela, largura, altura, pontuacao_final)
             ranking = adicionar_pontuacao(nome_jogador, pontuacao_final, ranking)
             salvar_ranking(ranking)
 
-        # Mostrar tela de game over e processar pontuação
+        # Mostra tela de game over e processar pontuação
         mostrar_ranking(tela, largura, altura, ranking)
         game_reiniciar = mostrar_game_over(tela, largura, altura, pontuacao_final)
 
         if not game_reiniciar:
-            # Limpar variáveis da cobra e reiniciar a tela
+            # Limpa as variáveis da cobra e reinicia o jogo
             game_over = False
             movimento_inicial = True
             velocidade_x = 0
